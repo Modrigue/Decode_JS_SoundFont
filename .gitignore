@@ -1,0 +1,5 @@
+decode_js_soundfont/.vs
+decode_js_soundfont/decode_js_soundfont/bin
+decode_js_soundfont/decode_js_soundfont/obj
+
+*.suo
