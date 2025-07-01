@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: decode_js_soundfont\bin\Release
+          path: decode_js_soundfont\decode_js_soundfont\bin\Release
           retention-days: 0.01
 
   release:
