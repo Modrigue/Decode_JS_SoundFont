@@ -11,10 +11,11 @@ on:
 
 env:
   SOLUTION_FILE: decode_js_soundfont/decode_js_soundfont.sln
+  SCRIPT_FILE: decode_js_soundfont.py
 
 jobs:
-  build:
-    name: Build
+  build-dotnet:
+    name: Build .NET Framework
     runs-on: windows-2022
     outputs:
       build-path: ${{ steps.upload.outputs.upload-path }}
@@ -42,9 +43,23 @@ jobs:
           path: decode_js_soundfont\decode_js_soundfont\bin\Release
           retention-days: 0.01
 
+  check-python-syntax:
+    name: Check Python Syntax
+    runs-on: windows-2022
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check Python syntax
+        run: |
+          echo ${{ env.SCRIPT_FILE }}
+          python -m py_compile ${{ env.SCRIPT_FILE }}
+
   release:
     name: Release
-    needs: build
+    needs: build-dotnet
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: windows-2022
 
