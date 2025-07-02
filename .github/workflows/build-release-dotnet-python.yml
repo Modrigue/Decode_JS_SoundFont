@@ -35,11 +35,11 @@ jobs:
           python citools\update_version.py
           msbuild $env:SOLUTION_FILE /p:Configuration=Release
 
-      - name: Upload Build Artifacts
+      - name: Upload Build .NET Artifacts
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: build-output
+          name: build-dotnet-output
           path: decode_js_soundfont\decode_js_soundfont\bin\Release
           retention-days: 0.01
 
@@ -57,24 +57,38 @@ jobs:
           echo ${{ env.SCRIPT_FILE }}
           python -m py_compile ${{ env.SCRIPT_FILE }}
 
+      - name: Upload python script
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-output
+          path: ${{ env.SCRIPT_FILE }}
+          retention-days: 0.01
+
   release:
     name: Release
-    needs: build-dotnet
+    needs: [build-dotnet, check-python-syntax]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: windows-2022
 
     steps:
-      - name: Download Build Artifact
+      - name: Download Build .NET Artifact
         uses: actions/download-artifact@v4
         with:
-          name: build-output
+          name: build-dotnet-output
+          path: output
+
+      - name: Download Python Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-output
           path: output
 
       - name: Zip Build Output
         run: |
           $Tag = "${{ github.ref_name }}"
           $ZipName = "decode_js_soundfont_$Tag.zip"
-          powershell Compress-Archive -Path output\*.exe -DestinationPath $ZipName
+          powershell Compress-Archive -Path output\*.exe, output\*.py -DestinationPath $ZipName
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
