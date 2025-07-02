@@ -1,7 +1,13 @@
-# Decode_JS_SoundFont
-Simple Windows command line tool to decode JS soundfonts.
+# decode_js_soundfont
 
-Usage:
+Simple Windows command line tool and Python script to decode JS soundfonts.
+
+Usages:
+
 ```
 .\decode_js_soundfont.exe [files and/or directories paths]
+```
+
+```sh
+python3 decode_js_soundfont.py [files and/or directories paths]
 ```
